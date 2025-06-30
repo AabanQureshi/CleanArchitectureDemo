@@ -1,4 +1,5 @@
 using Application;
+using CleanArchitectureDemo.Utils.CustomMiddleWares;
 using Infrastructure;
 using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
-
+builder.Services.AddProblemDetails();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,7 +24,9 @@ if (app.Environment.IsDevelopment())
         o.Theme = ScalarTheme.DeepSpace;
     });
 }
-
+ 
+app.UseMiddleware<MiddlewareExceptionHandler>(); // For Registring Global Exception Handler
+app.UseExceptionHandler(); // for Registring Global Exception Handler through IExceptionHandler Interface
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

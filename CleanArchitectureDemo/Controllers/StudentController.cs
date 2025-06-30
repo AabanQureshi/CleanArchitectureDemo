@@ -15,6 +15,12 @@ namespace CleanArchitectureDemo.Controllers
             _studentService = studentService;
         }
 
+        [HttpGet("error")]
+        public void Error()
+        {
+            throw new NotImplementedException("This method is not implemented yet.");
+        }
+
         [HttpPost]
 
         public async Task<IActionResult> AddStudentAsync([FromBody] StudentDTO studentDto)
