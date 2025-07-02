@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Exceptions;
 
 namespace CleanArchitectureDemo.Utils.GlobalExceptionHandler
 {
@@ -26,7 +27,9 @@ namespace CleanArchitectureDemo.Utils.GlobalExceptionHandler
             {
                 Type = "https://httpstatuses.com/",
                 Instance = httpContext.Request.Path,
+                Detail = exception.Message,
                 Extensions =
+
                 {
                     ["traceId"] = traceId,
                     ["requestId"] = requestId
@@ -37,12 +40,14 @@ namespace CleanArchitectureDemo.Utils.GlobalExceptionHandler
                 case ArgumentException _:
                     problem.Status = StatusCodes.Status400BadRequest;
                     problem.Title = "Bad Request";
-
+                    break;
+                case UserNotFoundException _:
+                    problem.Status = StatusCodes.Status404NotFound;
+                    problem.Title = "User Not Found";
                     break;
                 case UnauthorizedAccessException _:
                     problem.Status = StatusCodes.Status401Unauthorized;
                     problem.Title = "Unauthorized";
-                    problem.Detail = exception.Message;
                     break;
                 case KeyNotFoundException _:
                     problem.Status = StatusCodes.Status404NotFound;

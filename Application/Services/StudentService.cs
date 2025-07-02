@@ -2,9 +2,11 @@
 using Application.Abstraction.IServices;
 using Application.DTOs;
 using Domain.Entites;
+using Shared.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,14 +58,19 @@ namespace Application.Services
             return await _studentRepository.GetByIdAsync(id).ConfigureAwait(false);
         }
 
-        public async Task UpdateStudentAsync(Guid id, StudentDTO dTO)
+        public async Task<Result> UpdateStudentAsync(Guid id, StudentDTO dTO)
         {
-            var student = await _studentRepository.GetByIdAsync(id).ConfigureAwait(false) ?? throw new KeyNotFoundException($"Student with ID {id} not found.");
+            var student = await _studentRepository.GetByIdAsync(id).ConfigureAwait(false);
+
+            if (student == null) return Result.Failure($"Student with ID {id} not found.", HttpStatusCode.NotFound, "User Not Found");
+            
             student.Name = dTO.Name;
             student.Email = dTO.Email;
             student.DateOfBirth = dTO.DateOfBirth;
             _studentRepository.Update(student);
             await _studentRepository.SaveChangesAsync().ConfigureAwait(false);
+
+            return Result.Success();
         }
 
         public async Task DeleteStudentAsync(Guid id)

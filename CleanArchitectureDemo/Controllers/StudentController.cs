@@ -67,20 +67,17 @@ namespace CleanArchitectureDemo.Controllers
             }
         }
         [HttpPut("{id:Guid}")]
-        public async Task<IActionResult> UpdateStudentAsync(Guid id, [FromBody] StudentDTO studentDto)
+        public async Task<IActionResult> UpdateStudentAsync([FromRoute] Guid id, [FromBody] StudentDTO studentDto)
         {
-            try
+            var result = await _studentService.UpdateStudentAsync(id, studentDto).ConfigureAwait(false);
+            Console.WriteLine("something happened");
+            if (result.IsSuccess == true && result.IsError == false)
             {
-                await _studentService.UpdateStudentAsync(id, studentDto).ConfigureAwait(false);
-                return Ok("Student updated successfully.");
+                return Ok();
             }
-            catch (KeyNotFoundException knfEx)
+            else
             {
-                return NotFound(knfEx.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error updating student: {ex.Message}");
+                return BadRequest(result.Error);
             }
         }
         [HttpDelete("{id:Guid}")]

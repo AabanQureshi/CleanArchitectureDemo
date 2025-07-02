@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Domain.Entites;
+using Shared.Result;
 
 namespace Application.Abstraction.IServices
 {
@@ -9,6 +10,6 @@ namespace Application.Abstraction.IServices
         Task DeleteStudentAsync(Guid id);
         Task<Student?> GetStudentByIdAsync(Guid id);
         Task<IEnumerable<Student>> GetStudentsAsync();
-        Task UpdateStudentAsync(Guid id, StudentDTO dTO);
+        Task<Result> UpdateStudentAsync(Guid id, StudentDTO dTO);
     }
 }
